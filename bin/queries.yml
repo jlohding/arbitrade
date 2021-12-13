@@ -1,0 +1,11 @@
+get_contract_sequence: 
+  STK: SELECT local_symbol, roll_date FROM contract WHERE underlying_id = %s ORDER BY roll_date
+  FUT: SELECT local_symbol, roll_date FROM contract WHERE underlying_id = %s AND local_symbol LIKE ANY (%s) ORDER BY roll_date
+get_underlying_id: SELECT underlying_id FROM underlying WHERE symbol = %s AND kind = %s
+update_active_contracts: UPDATE contract SET active = FALSE WHERE roll_date <= now() AND active = TRUE
+get_price_series: [CREATE TEMP TABLE IF NOT EXISTS temp_df AS SELECT * FROM time_series LIMIT 0, 
+                   INSERT INTO temp_df SELECT * FROM time_series WHERE local_symbol = %s AND %s <= dt AND dt < %s ORDER BY dt]
+get_contfut_df: SELECT close_px FROM time_series WHERE local_symbol = %s AND dt = %s
+get_active_local_symbol: 
+  STK: SELECT local_symbol FROM contract WHERE active = TRUE AND underlying_id = %s
+  FUT: SELECT local_symbol FROM contract WHERE active = TRUE AND underlying_id = %s AND local_symbol LIKE ANY (%s) ORDER BY roll_date

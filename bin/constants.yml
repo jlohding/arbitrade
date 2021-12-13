@@ -1,0 +1,189 @@
+month_codes:
+  F: JAN
+  G: FEB
+  H: MAR
+  J: APR
+  K: MAY
+  M: JUN
+  N: JUL
+  Q: AUG
+  U: SEP
+  V: OCT
+  X: NOV
+  Z: DEC
+
+assets:
+  FUT:
+    VX:
+      symbol: VX
+      ib_symbol: VIX
+      kind: FUT
+      exchange: CFE
+      currency: USD
+      mult: 1000
+      margin: 1500
+      include_months: [F, G, H, J, K, M, N, Q, U, V, X, Z]
+      exp_fmt: [VX, 2]
+      roll_days_before_exp: 3
+    GC:
+      symbol: GC
+      ib_symbol: GC
+      kind: FUT
+      exchange: NYMEX
+      currency: USD
+      mult: 100
+      margin: 150
+      include_months: [G, J, M, Q, Z]
+      exp_fmt: [GC, 2]
+      roll_days_before_exp: 31
+    NG:
+      symbol: NG
+      ib_symbol: NG
+      kind: FUT
+      exchange: NYMEX
+      currency: USD
+      mult: 10000
+      margin: 225
+      include_months: [F, G, H, J, K, M, N, Q, U, V, X, Z]
+      exp_fmt: [NG, 2]
+      roll_days_before_exp: 1
+    CL:
+      symbol: CL
+      ib_symbol: CL
+      kind: FUT
+      exchange: NYMEX
+      currency: USD
+      mult: 1000
+      margin: 340
+      include_months: [F, G, H, J, K, M, N, Q, U, V, X, Z]
+      exp_fmt: [CL, 2]
+      roll_days_before_exp: 1
+    HG:
+      symbol: HG
+      ib_symbol: HG
+      kind: FUT
+      exchange: NYMEX
+      currency: USD
+      mult: 25000
+      margin: 400
+      include_months: [H, K, N, U, Z]
+      exp_fmt: [HG, 2]
+      roll_days_before_exp: 31
+    PA:
+      symbol: PA
+      ib_symbol: PA
+      kind: FUT
+      exchange: NYMEX
+      currency: USD
+      mult: 100
+      margin: 1250
+      include_months: [H, M, U, Z]
+      exp_fmt: [PA, 2]
+      roll_days_before_exp: 30
+    SI:
+      symbol: SI
+      ib_symbol: SI
+      kind: FUT
+      exchange: NYMEX
+      currency: USD
+      mult: 5000
+      margin: 500
+      include_months: [H, K, N, U, Z]
+      exp_fmt: [SI, 2]
+      roll_days_before_exp: 31
+    ZC:
+      symbol: ZC
+      ib_symbol: ZC
+      kind: FUT
+      exchange: ECBOT
+      currency: USD
+      mult: 50
+      margin: 600
+      include_months: [H, K, N, Z]
+      exp_fmt: [ZC, 2]
+      roll_days_before_exp: 18
+    ZW:
+      symbol: ZW
+      ib_symbol: ZW
+      kind: FUT
+      exchange: ECBOT
+      currency: USD
+      mult: 50
+      margin: 275
+      include_months: [H, K, N, Z]
+      exp_fmt: [ZW, 2]
+      roll_days_before_exp: 18
+    ZS:
+      symbol: ZS
+      ib_symbol: ZS
+      kind: FUT
+      exchange: ECBOT
+      currency: USD
+      mult: 50
+      margin: 750
+      include_months: [F, H, K, N, Z]
+      exp_fmt: [ZS, 2]
+      roll_days_before_exp: 18
+    ES:
+      symbol: ES
+      ib_symbol: ES
+      kind: FUT
+      exchange: GLOBEX
+      currency: USD
+      mult: 50
+      margin: 500
+      include_months: [H, M, U, Z]
+      exp_fmt: [ES, 2]
+      roll_days_before_exp: 7
+    GE:
+      symbol: GE
+      ib_symbol: GE
+      kind: FUT
+      exchange: GLOBEX
+      currency: USD
+      mult: 2500
+      margin: 0
+      include_months: [H, M, U, Z]
+      exp_fmt: [GE, 2]
+      roll_days_before_exp: 1
+  STK:
+    SPY:
+      symbol: SPY
+      ib_symbol: SPY
+      kind: STK
+      exchange: SMART
+      currency: USD
+    QQQ:
+      symbol: QQQ
+      ib_symbol: QQQ
+      kind: STK
+      exchange: SMART
+      currency: USD
+
+regex:
+  VX:
+    local_symbol: [[VX, VX],[\d\B,'']]
+  ES:
+    local_symbol: [[\d\B,'']]
+  NQ:
+    local_symbol: [[\d\B,'']]
+  GE:
+    local_symbol: [[\d\B,'']]
+  SI:
+    local_symbol: [[\d\B,'']]
+  GC:
+    local_symbol: [[\d\B,'']]
+  PA:
+    local_symbol: [[\d\B,'']]
+  HG:
+    local_symbol: [[\d\B,'']]
+  CL:
+    local_symbol: [[\d\B,'']]
+  NG:
+    local_symbol: [[\d\B,'']]
+  ZC:
+    local_symbol: [['(?<=ZC)\w', '   MONTHCODE ']]
+  ZW:
+    local_symbol: [['(?<=ZW)\w', '   MONTHCODE ']]
+  ZS:
+    local_symbol: [['(?<=ZS)\w', '   MONTHCODE ']]
