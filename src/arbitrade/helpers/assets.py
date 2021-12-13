@@ -34,17 +34,16 @@ class Future(Asset):
         self.exp_fmt = exp_fmt
         self.roll_days_before_exp = roll_days_before_exp
         self.contfut_series = None
-        self.contract_sequence = []
-    
+        self.expired_ib_local_symbol = None
+
     def set_contfut_series(self, df):
         self.contfut_series = df
 
-    def set_contract_sequence(self, seq):
-        self.contract_sequence = seq
+    def set_expired_ib_local_symbol(self, expired_ib_local_symbol):
+        self.expired_ib_local_symbol = expired_ib_local_symbol
 
-    def get_expired_local_symbol(self):
-        idx = self.contract_sequence.index(self.local_symbol)
-        return self.contract_sequence[idx-1]
+    def get_expired_ib_local_symbol(self):
+        return self.expired_ib_local_symbol
 
     def get_contfut_series(self):
         return self.contfut_series

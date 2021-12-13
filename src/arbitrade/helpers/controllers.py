@@ -14,7 +14,7 @@ class ContractController:
         conId = str(contract_dets.contract).split(",")[0]
         return conId
 
-    def __get_composite_symbol(self, assets):
+    def __get_composite_symbol(self, asset_tup):
         '''
         Returns composite symbol for IB's contract.symbol
 
@@ -23,13 +23,13 @@ class ContractController:
          - FUT/FUT same underlying | ib_symbol of the future
          - FUT/FUT inter-cmdty | local_symbol of inter-cmdty spread: "CL.BZ"
         '''
-        if isinstance(assets[0], assets.Future) and isinstance(assets[1], assets.Future):
-            if assets[0].ib_symbol == assets[1].ib_symbol:
-                return assets[0].ib_symbol
+        if isinstance(asset_tup[0], assets.Future) and isinstance(asset_tup[1], assets.Future):
+            if asset_tup[0].ib_symbol == asset_tup[1].ib_symbol:
+                return asset_tup[0].ib_symbol
             else:
-                return assets[0].ib_symbol + "." + assets[1].ib_symbol
-        elif isinstance(assets[0], assets.Stock) and isinstance(assets[1], assets.Stock):
-            symbols = sorted([assets[0].ib_symbol, assets[1].ib_symbol])
+                return asset_tup[0].ib_symbol + "." + asset_tup[1].ib_symbol
+        elif isinstance(asset_tup[0], assets.Stock) and isinstance(asset_tup[1], assets.Stock):
+            symbols = sorted([asset_tup[0].ib_symbol, asset_tup[1].ib_symbol])
             return ",".join(symbols)
         else:
             raise Exception("Invalid combo {[x.ib_symbol for x in assets]}")
@@ -37,7 +37,7 @@ class ContractController:
     def construct_single_contract(self, asset, expired=False):
         args = {}
         if expired:
-            args["localSymbol"] = asset.get_expired_local_symbol()
+            args["localSymbol"] = asset.get_expired_ib_local_symbol()
         else:
             args["localSymbol"] = asset.ib_local_symbol
         args["secType"] = asset.kind
@@ -47,14 +47,14 @@ class ContractController:
         con.set_conId(self.__get_conId(con.make_ib_contract()))
         return con
 
-    def construct_composite_contract(self, assets, ratios, expired=False):
+    def construct_composite_contract(self, asset_tup, ratio_tup, expired=False):
         args = {}
-        args["contract_symbol"] = self.__get_composite_symbol(assets)
+        args["contract_symbol"] = self.__get_composite_symbol(asset_tup)
         args["secType"] = "BAG"
-        args["currency"] = assets[0].currency
-        args["exchange"] = assets[0].exchange
+        args["currency"] = asset_tup[0].currency
+        args["exchange"] = asset_tup[0].exchange
         composite = contracts.CompositeContract(**args)        
-        for asset, size in zip(assets, ratios):
+        for asset, size in zip(asset_tup, ratio_tup):
             con = self.construct_single_contract(asset, expired)
             composite.add_single_contract(con, size)
         return composite
@@ -93,6 +93,10 @@ class AssetController:
     def __get_contract_sequence(self, ticker, include_months):
         return [x[0] for x in self.db.get_contract_sequence(ticker, "FUT", include_months)]
 
+    def __get_expired_local_symbol(self, local_symbol, contract_sequence):
+        idx = contract_sequence.index(local_symbol)
+        return contract_sequence[idx-1]
+
     def construct_stock(self, ticker):
         args = self.__get_asset_constants(ticker, "STK")
         stk = assets.Stock(**args)
@@ -110,7 +114,9 @@ class AssetController:
             fut.set_contfut_series(self.__get_contfut_series(ticker, contract_position, args["include_months"]))
         else:
             fut.set_price_series(self.__get_price_series(ticker, "FUT", contract_position, args["include_months"]))
-        fut.set_contract_sequence(self.__get_contract_sequence(ticker, args["include_months"]))
+
         fut.set_local_symbol(self.__get_local_symbol(ticker, "FUT", contract_position, args["include_months"]))
         fut.set_ib_local_symbol(self.format_ib_local_symbol(fut.symbol, fut.local_symbol))
+        exp_local_symbol = self.__get_expired_local_symbol(fut.local_symbol, self.__get_contract_sequence(ticker, args["include_months"])) 
+        fut.set_expired_ib_local_symbol(self.format_ib_local_symbol(ticker, exp_local_symbol))
         return fut
