@@ -19,8 +19,7 @@ class Contract:
         contract.secType = self.contract_kind
         contract.currency = self.contract_currency
         contract.exchange = self.contract_exchange
-        if self.conId != 0:
-            contract.conId = self.conId
+        contract.includeExpired = True
         return contract    
 
 class SingleContract(Contract):
@@ -50,5 +49,6 @@ class CompositeContract(Contract):
         contract.secType = self.contract_kind
         contract.currency = self.contract_currency
         contract.exchange = self.contract_exchange
+        contract.includeExpired = True
         contract.comboLegs = combolegs
         return contract

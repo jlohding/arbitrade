@@ -63,7 +63,7 @@ class Client(EWrapper, EClient):
     # execution
     def place_order(self, contract, order):
         self.order_exec_flag = threading.Event()            
-        self.place_order(self.nextValidOrderId,
+        self.placeOrder(self.nextValidOrderId,
                          contract,
                          order)
         self.order_exec_flag.wait()
