@@ -64,7 +64,7 @@ class AssetController:
         fut.set_expired_ib_local_symbol(self.__format_ib_local_symbol(ticker, exp_local_symbol))
         return fut
 
-    def construct_asset(self, ticker, kind, contract_position=0, continuous_contract=False):
+    def construct_asset(self, ticker, kind, contract_position=0, continuous_contract=False, **_):
         if kind == "STK":
             return self.__construct_stock(ticker)
         elif kind == "FUT":

@@ -1,4 +1,3 @@
-import assets
 import contracts
 
 class ContractController:
@@ -12,23 +11,23 @@ class ContractController:
 
     def __get_composite_symbol(self, asset_tup):
         '''
-        Returns composite symbol for IB's contract.symbol
+        Returns composite symbol for IB's contract.symbol (for 2 assets only)
 
         From IB documentation: 
          - STK/STK combo | Alphabetical order, comma-separated: "AMD,BAC"
          - FUT/FUT same underlying | ib_symbol of the future
          - FUT/FUT inter-cmdty | local_symbol of inter-cmdty spread: "CL.BZ"
         '''
-        if isinstance(asset_tup[0], assets.Future) and isinstance(asset_tup[1], assets.Future):
-            if asset_tup[0].ib_symbol == asset_tup[1].ib_symbol:
-                return asset_tup[0].ib_symbol
+        if [asset.get_kind() for asset in asset_tup] == ["FUT", "FUT"]:
+            if asset_tup[0].get_ib_symbol() == asset_tup[1].get_ib_symbol():
+                return asset_tup[0].get_ib_symbol()
             else:
-                return asset_tup[0].ib_symbol + "." + asset_tup[1].ib_symbol
-        elif isinstance(asset_tup[0], assets.Stock) and isinstance(asset_tup[1], assets.Stock):
-            symbols = sorted([asset_tup[0].ib_symbol, asset_tup[1].ib_symbol])
+                return asset_tup[0].get_ib_symbol() + "." + asset_tup[1].get_ib_symbol()
+        elif [asset.get_kind() for asset in asset_tup] == ["STK", "STK"]:
+            symbols = sorted([asset_tup[0].get_ib_symbol(), asset_tup[1].get_ib_symbol()])
             return ",".join(symbols)
         else:
-            raise Exception("Invalid combo {[x.ib_symbol for x in assets]}")
+            raise Exception("Invalid combo {[x..get_ib_symbol() for x in assets]}")
 
     def construct_single_contract(self, asset, expired=False):
         args = {}

@@ -4,11 +4,18 @@ from asset_controller import AssetController
 from contract_controller import ContractController
 from strategy_controller import StrategyController
 
-if __name__ == "__main__":
+def main():
     db = Database()
+    app = Client()    
     db.connect()
-    app = Client()
     app.connect()
+    strat_control = StrategyController(AssetController(db), ContractController(app))
 
-    db.disconnect()
+    forecast = strat_control.get_contract_forecasts()
+    
+    
     app.disconnect()
+    db.disconnect()
+
+if __name__ == "__main__":
+    main()

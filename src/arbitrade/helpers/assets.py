@@ -8,7 +8,13 @@ class Asset:
         self.exchange = exchange
         self.currency = currency
         self.price_series = None
-    
+
+    def get_kind(self):
+        return self.kind
+
+    def get_ib_symbol(self):
+        return self.ib_symbol
+
     def set_price_series(self, df):
         self.price_series = df
     
