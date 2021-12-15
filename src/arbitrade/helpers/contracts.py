@@ -20,6 +20,8 @@ class Contract:
         contract.currency = self.contract_currency
         contract.exchange = self.contract_exchange
         contract.includeExpired = True
+        if self.conId:
+            contract.conId = self.conId
         return contract    
 
 class SingleContract(Contract):

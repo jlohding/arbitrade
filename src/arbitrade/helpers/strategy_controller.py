@@ -30,15 +30,15 @@ class StrategyController:
     def __construct_strategy(self, args):
         return strategy.Strategy(**args)
 
-    def get_contract_forecasts(self):
-        forecast = self.get_asset_forecasts()
+    def get_contract_forecast(self):
+        forecast = self.get_asset_forecast()
         new_forecast = {}
         for asset, size in forecast.items():
             contract = self.contract_controller.construct_single_contract(asset)
-            new_forecast[contract] = size
+            new_forecast[contract.make_ib_contract()] = size
         return new_forecast
 
-    def get_asset_forecasts(self):
+    def get_asset_forecast(self):
         strategies = self.__construct_strategies()
         forecast = {}
         for strat in strategies:
