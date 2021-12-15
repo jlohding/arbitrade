@@ -1,6 +1,6 @@
 import contracts
 
-class ContractController:
+class ContractBuilder:
     def __init__(self, client):
         self.app = client
     
@@ -29,12 +29,13 @@ class ContractController:
         else:
             raise Exception("Invalid combo {[x..get_ib_symbol() for x in assets]}")
 
-    def construct_single_contract(self, asset, expired=False):
+    def build_single_contract(self, asset, expired=False):
         args = {}
         if expired:
             args["localSymbol"] = asset.get_expired_ib_local_symbol()
         else:
             args["localSymbol"] = asset.ib_local_symbol
+        args["ib_symbol"] = asset.ib_symbol
         args["secType"] = asset.kind
         args["currency"] = asset.currency
         args["exchange"] = asset.exchange
@@ -42,14 +43,14 @@ class ContractController:
         con.set_conId(self.__get_conId(con.make_ib_contract()))
         return con
 
-    def construct_composite_contract(self, asset_tup, ratio_tup, expired=False):
+    def build_composite_contract(self, asset_tup, ratio_tup, expired=False):
         args = {}
-        args["contract_symbol"] = self.__get_composite_symbol(asset_tup)
+        args["ib_symbol"] = self.__get_composite_symbol(asset_tup)
         args["secType"] = "BAG"
         args["currency"] = asset_tup[0].currency
         args["exchange"] = asset_tup[0].exchange
         composite = contracts.CompositeContract(**args)        
         for asset, size in zip(asset_tup, ratio_tup):
-            con = self.construct_single_contract(asset, expired)
+            con = self.build_single_contract(asset, expired)
             composite.add_single_contract(con, size)
         return composite

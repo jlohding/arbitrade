@@ -1,6 +1,6 @@
 import orders
 
-class Execution:
+class ExecutionController:
     def __init__(self, app, contract_forecast):
         self.app = app
         self.contract_positions = self.app.request_contract_positions()
@@ -24,5 +24,7 @@ class Execution:
         create_market_order = orders.market_order_factory()
         for contract, size in actions.items():
             if size != 0:
+                #contract.conId = 0
+                print(contract.__dict__)
                 order = create_market_order(size)
                 self.app.place_order(contract, order)

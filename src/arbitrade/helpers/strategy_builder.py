@@ -1,13 +1,13 @@
 import configs
 import strategy
 
-class StrategyController:
-    def __init__(self, asset_controller, contract_controller):
-        self.asset_controller = asset_controller
-        self.contract_controller = contract_controller
+class StrategyBuilder:
+    def __init__(self, asset_builder, contract_builder):
+        self.asset_builder = asset_builder
+        self.contract_builder = contract_builder
         self.constants = configs.get_strategies()
 
-    def __construct_strategies(self):
+    def __build_strategies(self):
         strategies = []
         for strategy_details in self.constants["strategies"].values():
             args = {} 
@@ -16,30 +16,30 @@ class StrategyController:
                 assets = ()
                 for item in strategy_details["assets"]:
                     if isinstance(item, list): # multi-leg spread
-                        bag = tuple((self.asset_controller.construct_asset(**leg), leg["ratio"]) for leg in item)
+                        bag = tuple((self.asset_builder.build(**leg), leg["ratio"]) for leg in item)
                         assets += (bag,)
                     else:
-                        asset = self.asset_controller.construct_asset(**item)
+                        asset = self.asset_builder.build(**item)
                         assets += (asset,)
                 args["name"] = strategy_details["name"]
                 args["portfolio_weight"] = strategy_details["portfolio_weight"]
                 args["assets"] = assets
-                strategies.append(self.__construct_strategy(args))
+                strategies.append(self.__build_strategy(args))
         return strategies
 
-    def __construct_strategy(self, args):
+    def __build_strategy(self, args):
         return strategy.Strategy(**args)
 
     def get_contract_forecast(self):
         forecast = self.get_asset_forecast()
         new_forecast = {}
         for asset, size in forecast.items():
-            contract = self.contract_controller.construct_single_contract(asset)
+            contract = self.contract_builder.build_single_contract(asset)
             new_forecast[contract.make_ib_contract()] = size
         return new_forecast
 
     def get_asset_forecast(self):
-        strategies = self.__construct_strategies()
+        strategies = self.__build_strategies()
         forecast = {}
         for strat in strategies:
             d = strat.get_forecasts()

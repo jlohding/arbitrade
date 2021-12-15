@@ -2,7 +2,7 @@ import re
 import configs
 import assets
 
-class AssetController:
+class AssetBuilder:
     def __init__(self, db):
         self.db = db
         self.constants = configs.get_constants()
@@ -40,7 +40,7 @@ class AssetController:
         idx = contract_sequence.index(local_symbol)
         return contract_sequence[idx-1]
 
-    def __construct_stock(self, ticker):
+    def __build_stock(self, ticker):
         args = self.__get_asset_constants(ticker, "STK")
         stk = assets.Stock(**args)
         stk.set_price_series(self.__get_price_series(ticker, "STK"))
@@ -48,7 +48,7 @@ class AssetController:
         stk.set_ib_local_symbol(self.__format_ib_local_symbol(stk.symbol, stk.local_symbol))
         return stk
 
-    def __construct_future(self, ticker, contract_position, continuous_contract=False):
+    def __build_future(self, ticker, contract_position, continuous_contract=False):
         if contract_position < 0:
             raise Exception("Contract position must be non-negative")
         args = self.__get_asset_constants(ticker, "FUT")
@@ -64,8 +64,8 @@ class AssetController:
         fut.set_expired_ib_local_symbol(self.__format_ib_local_symbol(ticker, exp_local_symbol))
         return fut
 
-    def construct_asset(self, ticker, kind, contract_position=0, continuous_contract=False, **_):
+    def build(self, ticker, kind, contract_position=0, continuous_contract=False, **_):
         if kind == "STK":
-            return self.__construct_stock(ticker)
+            return self.__build_stock(ticker)
         elif kind == "FUT":
-            return self.__construct_future(ticker, contract_position, continuous_contract)  
+            return self.__build_future(ticker, contract_position, continuous_contract)  

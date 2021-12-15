@@ -2,8 +2,9 @@ from ibapi.contract import Contract as ibContract
 from ibapi.contract import ComboLeg as ibComboLeg
 
 class Contract:
-    def __init__(self, localSymbol, secType, currency, exchange):
+    def __init__(self, ib_symbol, localSymbol, secType, currency, exchange):
         self.assets = None
+        self.contract_symbol = ib_symbol
         self.contract_local_symbol = localSymbol
         self.contract_kind = secType
         self.contract_currency = currency
@@ -15,6 +16,7 @@ class Contract:
 
     def make_ib_contract(self):
         contract = ibContract()
+        contract.symbol = self.contract_symbol
         contract.localSymbol = self.contract_local_symbol
         contract.secType = self.contract_kind
         contract.currency = self.contract_currency
@@ -34,11 +36,10 @@ class SingleContract(Contract):
         return leg
 
 class CompositeContract(Contract):
-    def __init__(self, contract_symbol, secType, currency, exchange):
-        super().__init__(None, secType, currency, exchange)
+    def __init__(self, ib_symbol, secType, currency, exchange):
+        super().__init__(ib_symbol, None, secType, currency, exchange)
         self.single_contracts = []
         self.sizes = []
-        self.contract_symbol = contract_symbol
 
     def add_single_contract(self, c, size):
         self.single_contracts.append(c)
