@@ -11,6 +11,18 @@ month_codes:
   V: OCT
   X: NOV
   Z: DEC
+  JAN: F
+  FEB: G
+  MAR: H
+  APR: J
+  MAY: K
+  JUN: M
+  JUL: N
+  AUG: Q
+  SEP: U
+  OCT: V
+  NOV: X
+  DEC: Z
 
 assets:
   FUT:
@@ -161,29 +173,45 @@ assets:
       currency: USD
 
 regex:
+  VIX:
+    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    local_symbol: [[\d\B,'']]
   VX:
-    local_symbol: [[VX, VX],[\d\B,'']]
+    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    local_symbol: [[\d\B,'']]
   ES:
+    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
     local_symbol: [[\d\B,'']]
   NQ:
+    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
     local_symbol: [[\d\B,'']]
   GE:
+    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
     local_symbol: [[\d\B,'']]
   SI:
+    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
     local_symbol: [[\d\B,'']]
   GC:
+    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
     local_symbol: [[\d\B,'']]
   PA:
+    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
     local_symbol: [[\d\B,'']]
   HG:
+    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
     local_symbol: [[\d\B,'']]
   CL:
+    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
     local_symbol: [[\d\B,'']]
   NG:
+    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
     local_symbol: [[\d\B,'']]
   ZC:
+    ib_local_symbol: [['\s\s\s\w\w\w\s', 'MONTHCODE']]
     local_symbol: [['(?<=ZC)\w', '   MONTHCODE ']]
   ZW:
+    ib_local_symbol: [['\s\s\s\w\w\w\s', 'MONTHCODE']]
     local_symbol: [['(?<=ZW)\w', '   MONTHCODE ']]
   ZS:
+    ib_local_symbol: [['\s\s\s\w\w\w\s', 'MONTHCODE']]
     local_symbol: [['(?<=ZS)\w', '   MONTHCODE ']]
