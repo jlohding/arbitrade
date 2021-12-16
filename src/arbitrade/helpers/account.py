@@ -1,5 +1,3 @@
-import pandas as pd
-
 class Account:    
     def create_historical_data(self, bars):
         historical_data = []
