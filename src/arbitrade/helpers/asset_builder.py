@@ -1,18 +1,11 @@
 import re
-from configs import Constants
+from configs import AssetConstants
 import assets
 
 class AssetBuilder:
     def __init__(self, db):
         self.db = db
-        self.constants = Constants()
-
-    def __get_asset_constants(self, ticker, kind):
-        try:
-            args = self.constants.constants["assets"][kind][ticker]
-        except KeyError:
-            raise Exception(f"No {kind} with ticker {ticker} found in constants.yml")
-        return args
+        self.constants = AssetConstants()
 
     def __get_local_symbol(self, ticker, kind, contract_position=0, include_months=()):
         return self.db.get_active_local_symbol(ticker, kind, contract_position, include_months)
@@ -38,7 +31,7 @@ class AssetBuilder:
         return base
 
     def build_base_asset(self, ticker, kind, contract_position, **_):
-        args = self.__get_asset_constants(ticker, kind)
+        args = self.constants.get_asset_constants(ticker, kind)
         if kind == "STK":
             asset = assets.Stock(**args)
             asset.set_local_symbol(self.__get_local_symbol(ticker, "STK"))

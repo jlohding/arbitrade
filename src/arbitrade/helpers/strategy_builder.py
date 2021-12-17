@@ -2,7 +2,7 @@ from configs import StrategyConstants
 import strategy
 
 class StrategyBuilder:
-    def __init__(self, asset_builder, contract_builder, asset_filter=()):
+    def __init__(self, asset_builder, contract_builder, asset_filter):
         self.asset_builder = asset_builder
         self.contract_builder = contract_builder
         self.constants = StrategyConstants(asset_filter)

@@ -1,5 +1,5 @@
 import datetime as dt
-from configs import Constants
+from configs import AssetConstants
 
 class HistoricalDataUpdate:
     def __init__(self, app, db, strategy_builder):
@@ -7,17 +7,17 @@ class HistoricalDataUpdate:
         self.db = db
         self.strategy_builder = strategy_builder
 
-    def __get_historical_data(self, duration, bar_size):
+    def __get_historical_data(self, tm, duration, bar_size):
         ib_contracts = self.strategy_builder.get_base_ib_contracts()
         all_bars = []
         for base, contract in ib_contracts.items():
             if contract.symbol == "VIX": continue # temp: i dont have mkt data for cfe right now
-            bars = [[base.local_symbol] + bar for bar in self.app.request_historical_data(contract, duration, bar_size)]
+            bars = [[base.local_symbol] + bar for bar in self.app.request_historical_data(contract, tm, duration, bar_size)]
             all_bars.extend(bars)
         return all_bars
 
-    def update_historical_database(self, duration="3 D", bar_size="1 day"):
-        bars = self.__get_historical_data(duration, bar_size)
+    def update_historical_database(self, tm, duration="3 D", bar_size="1 day"):
+        bars = self.__get_historical_data(tm, duration, bar_size)
         self.db.update_ts(bars)
         self.db.commit()
 
@@ -25,7 +25,7 @@ class AccountDataUpdate:
     def __init__(self, app, db):
         self.app = app
         self.db = db
-        self.constants = Constants()
+        self.constants = AssetConstants()
     
     def __get_account_details(self):
         acc_details = self.app.request_account_details()

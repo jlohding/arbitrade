@@ -9,7 +9,8 @@ class ExecutionController:
     def get_required_actions(self):
         actions = {}
         for contract, position in self.contract_positions.items():
-            actions[contract] = position * -1
+            if (contract.symbol, contract.secType) in [(c.symbol, c.secType) for c in self.forecast]:
+                actions[contract] = position * -1
         for contract, size in self.forecast.items():
             for existing_contract in actions:
                 if existing_contract.conId == contract.conId: # merge identical conIds

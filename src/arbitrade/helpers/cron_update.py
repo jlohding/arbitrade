@@ -6,8 +6,7 @@ class CronUpdate:
     def __init__(self, app, strategy_builder):
         self.app = app
         self.strategy_builder = strategy_builder
-        self.constants = configs.Constants()
-        self.cron_path = configs.get_cron_path()
+        self.constants = configs.AssetConstants()
 
     def __get_contract_details(self):
         ib_contracts = self.strategy_builder.get_base_ib_contracts()
@@ -64,15 +63,16 @@ class CronUpdate:
             cron_d[(cron, dt_string)].append(asset)
         return cron_d
     
-    def update_crontab(self):
+    def update_cronjobs(self):
         cron_d = self.__get_cron_d()
         commands = []
         for key, assets in cron_d.items():
             cron, dt_string = key
             asset_string = " ".join([",".join(asset) for asset in assets])
-            command = f"{cron} python __main__.py -t '{asset_string}' -d '{dt_string}'\n"
+            
+            command = configs.get_config("commands")["cron"].format(cron, asset_string, dt_string)
             commands.append(command)
         
-        with open(self.cron_path, "w") as file:
+        with open(configs.get_config("paths")["cron"], "w") as file:
             for command in commands:
-                file.write(command)
+                file.write(command+"\n")

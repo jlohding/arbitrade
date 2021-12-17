@@ -6,38 +6,51 @@ from strategy_builder import StrategyBuilder
 from execution import ExecutionController
 from db_update import HistoricalDataUpdate
 from db_update import AccountDataUpdate
+from cron_update import CronUpdate
 
-def main():
-    db = Database()
-    app = Client()    
-    db.connect()
-    app.connect()
+class Controller:
+    def __init__(self, tm, assets):
+        self.app = Client()
+        self.db = Database()
+        self.tm = tm
+        self.asset_builder = AssetBuilder(self.db)
+        self.contract_builder = ContractBuilder(self.app)
+        self.strategy_builder = StrategyBuilder(self.asset_builder, self.contract_builder, assets)
 
-    #app.reqGlobalCancel()
-    asset_builder = AssetBuilder(db)
-    contract_builder = ContractBuilder(app)
+    def update_historical_database(self):
+        hist_updates = HistoricalDataUpdate(self.app, self.db, self.strategy_builder)
+        hist_updates.update_historical_database(self.tm)
     
-    #'''
-    updates = HistoricalDataUpdate(app, db, asset_builder, contract_builder)
-    updates.update_historical_database()
-    #'''
+    def execute(self):
+        contract_forecast = self.strategy_builder.get_contract_forecast()
+        execs = ExecutionController(self.app, contract_forecast)
+        execs.execute()
 
-    #'''
-    strategy_builder = StrategyBuilder(asset_builder, contract_builder)
-    contract_forecast = strategy_builder.get_contract_forecast()
-    execs = ExecutionController(app, contract_forecast)
-    execs.execute()
-    #'''
-
-    #'''
-    acc_updates = AccountDataUpdate(app, db)
-    acc_updates.update_account_database()
-    acc_updates.update_position_database()
-    acc_updates.update_transactions_database()
-    #'''
+    def update_account_database(self):
+        acc_updates = AccountDataUpdate(self.app, self.db)
+        acc_updates.update_account_database()
+        acc_updates.update_position_database()
+        acc_updates.update_transactions_database()
     
-    app.disconnect()
-    db.disconnect()
+    def update_cronjobs(self):
+        all_assets_builder = StrategyBuilder(self.asset_builder, self.contract_builder, "ALL")
+        cron_updates = CronUpdate(self.app, all_assets_builder)
+        cron_updates.update_cronjobs()
+    
+    def main(self):
+        self.app.connect()
+        self.db.connect()
+        self.update_historical_database()
+        self.execute()
+        self.update_account_database()
+        self.update_cronjobs()
+        self.app.disconnect()
+        self.db.disconnect()
 
 if __name__ == "__main__":
-    main()
+    #import datetime as dt
+    #tm = dt.datetime.utcnow().strftime("%Y%m%d %H:%M:%S")
+    #assets=()
+
+    control = Controller(tm, assets)
+    control.main()
