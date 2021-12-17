@@ -1,12 +1,11 @@
-from client import Client
-from database import Database
-from asset_builder import AssetBuilder
-from contract_builder import ContractBuilder
-from strategy_builder import StrategyBuilder
-from execution import ExecutionController
-from db_update import HistoricalDataUpdate
-from db_update import AccountDataUpdate
-from cron_update import CronUpdate
+from arbitrade.client.client import Client
+from arbitrade.database.database import Database
+from arbitrade.controllers.asset_builder import AssetBuilder
+from arbitrade.controllers.contract_builder import ContractBuilder
+from arbitrade.controllers.strategy_builder import StrategyBuilder
+from arbitrade.controllers.execution import ExecutionController
+from arbitrade.database.db_update import HistoricalDataUpdate, AccountDataUpdate
+from arbitrade.controllers.cron_update import CronUpdate
 
 class Controller:
     def __init__(self, tm, assets):
@@ -39,6 +38,7 @@ class Controller:
     
     def main(self):
         self.app.connect()
+        self.app.reqGlobalCancel()
         self.db.connect()
         self.update_historical_database()
         self.execute()
@@ -46,11 +46,3 @@ class Controller:
         self.update_cronjobs()
         self.app.disconnect()
         self.db.disconnect()
-
-if __name__ == "__main__":
-    #import datetime as dt
-    #tm = dt.datetime.utcnow().strftime("%Y%m%d %H:%M:%S")
-    #assets=()
-
-    control = Controller(tm, assets)
-    control.main()

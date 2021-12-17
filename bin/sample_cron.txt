@@ -1,0 +1,2 @@
+30 14 17 12 * root /bin/sh /home/admin/arbitrade/bin/run.sh -a 'ZC,FUT ZW,FUT' -d '20211217 14:30:00' && /bin/sh /home/admin/arbitrade/bin/update_cron.sh
+0 23 19 12 * root /bin/sh /home/admin/arbitrade/bin/run.sh -a 'HG,FUT' -d '20211219 23:00:00' && /bin/sh /home/admin/arbitrade/bin/update_cron.sh

@@ -1,4 +1,4 @@
-import contracts
+from arbitrade.controllers.models import contracts
 
 class ContractBuilder:
     def __init__(self, client):

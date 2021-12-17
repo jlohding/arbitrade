@@ -1,0 +1,20 @@
+get_contract_sequence: 
+  STK: SELECT local_symbol, roll_date FROM contract WHERE underlying_id = %s ORDER BY roll_date
+  FUT: SELECT local_symbol, roll_date FROM contract WHERE underlying_id = %s AND local_symbol LIKE ANY (%s) ORDER BY roll_date
+insert_underlying: INSERT INTO underlying VALUES(DEFAULT,%s,%s,%s) ON CONFLICT (symbol, kind) DO NOTHING
+insert_contract: INSERT INTO contract VALUES(%s,%s,%s,%s,%s,%s,%s) ON CONFLICT (local_symbol) DO NOTHING
+update_account: INSERT INTO account VALUES(%s, %s, %s, %s, %s, %s) ON CONFLICT (dt, account_code) DO UPDATE SET (portfolio_value, realised_pnl, unrealised_pnl, margin) = (EXCLUDED.portfolio_value, EXCLUDED.realised_pnl, EXCLUDED.unrealised_pnl, EXCLUDED.margin)
+update_positions: INSERT INTO positions VALUES(%s, %s, %s, %s, %s) ON CONFLICT (dt, account_code, local_symbol) DO UPDATE SET (local_symbol, pos) = (EXCLUDED.local_symbol, EXCLUDED.pos)
+update_transactions: INSERT INTO transactions VALUES(%s, %s, %s, %s, %s) ON CONFLICT (dt, local_symbol) DO NOTHING 
+update_ts: INSERT INTO time_series VALUES(%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT (local_symbol, dt) DO NOTHING
+get_underlying_id: SELECT underlying_id FROM underlying WHERE symbol = %s AND kind = %s
+get_underlying_details: SELECT symbol, kind FROM underlying WHERE underlying_id = %s
+update_active_contracts: UPDATE contract SET active = FALSE WHERE roll_date <= now() AND active = TRUE
+get_price_series: ['CREATE TEMP TABLE IF NOT EXISTS temp_df AS SELECT * FROM time_series LIMIT 0', 
+                   'INSERT INTO temp_df SELECT * FROM time_series WHERE local_symbol = %s AND %s <= dt AND dt < %s ORDER BY dt']
+get_contfut_df: SELECT close_px FROM time_series WHERE local_symbol = %s AND dt = %s
+get_active_local_symbol: 
+  STK: SELECT local_symbol FROM contract WHERE active = TRUE AND underlying_id = %s
+  FUT: SELECT local_symbol FROM contract WHERE active = TRUE AND underlying_id = %s AND local_symbol LIKE ANY (%s) ORDER BY roll_date
+get_all_active_contracts: ['SELECT underlying_id, local_symbol FROM contract WHERE active = TRUE AND roll_date <= NOW()::date + %s::interval',
+                           'SELECT symbol, kind FROM underlying WHERE underlying_id = %s']

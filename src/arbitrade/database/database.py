@@ -1,8 +1,7 @@
 import datetime as dt
 import pandas as pd
 import psycopg2
-from configs import get_config
-from configs import get_queries
+from arbitrade.conf.configs import get_config, get_queries
 
 class Database:
     def __init__(self):
@@ -35,7 +34,7 @@ class Database:
 
     def commit(self):
         self.conn.commit()
-        self.log(f"Affected {self.commits} rows.")
+        #self.log(f"Affected {self.commits} rows.")
         self.commits = 0
 
     def execute(self, sql, args=(), multi=False):
@@ -46,15 +45,15 @@ class Database:
             self.cur.execute(sql, args)
         self.commits += self.cur.rowcount
 
-    def read_table(self, table_name, mute=False):
+    def read_table(self, table_name):
         df = pd.read_sql(f"SELECT * FROM {table_name}", self.conn)
-        if not mute:
-            self.log(df, timestamp=False)
+        #self.log(df, timestamp=False)
         return df
 
     def update_active_contracts(self):
         sql = self.queries['update_active_contracts']
         self.execute(sql)
+        self.commit()
 
     def get_underlying_id(self, symbol, kind):
         sql = self.queries['get_underlying_id']
@@ -64,6 +63,12 @@ class Database:
             return result[0]
         else:
             raise Exception(f"({symbol},{kind}) not found in table underlying")
+
+    def get_underlying_details(self, underlying_id):
+        sql = self.queries['get_underlying_details']
+        self.execute(sql, (underlying_id,))
+        symbol, kind = self.cur.fetchall()[0]
+        return symbol, kind
 
     def get_contract_sequence(self, symbol, kind, include_months=()):  
         underlying_id = self.get_underlying_id(symbol, kind)
@@ -77,26 +82,35 @@ class Database:
 
         contracts = self.cur.fetchall()
         return contracts
-    # ------------
+
     def insert_underlying(self, *data):
-        sql = "INSERT INTO underlying VALUES(DEFAULT,%s,%s,%s) ON CONFLICT (symbol, kind) DO NOTHING"        
+        sql = self.queries['insert_underlying']
         self.execute(sql, data)
 
-        return self.read_table("underlying")
-
     def insert_contract(self, symbol, kind, *data):
-        sql = "INSERT INTO contract VALUES(%s,%s,%s,%s,%s,%s,%s) ON CONFLICT (local_symbol) DO NOTHING"
+        sql = self.queries['insert_contract']
         underlying_id = self.get_underlying_id(symbol, kind)
         self.execute(sql, (underlying_id,)+data)
 
-        return self.read_table("contract")
+    def update_account(self, args):
+        sql = self.queries['update_account']
+        self.execute(sql, (args["dt"], args["AccountCode"], args["TotalCashBalance"], args["RealizedPnL"], args["UnrealizedPnL"], args["MaintMarginReq"]))
+        return self.read_table("account")
 
-    def insert_ts(self, local_symbol, data):
-        sql = '''INSERT INTO time_series VALUES(%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT (local_symbol, dt) DO NOTHING'''
-        self.execute(sql, data)
+    def update_positions(self, rows):
+        sql = self.queries['update_positions']
+        self.execute(sql, rows, multi=True)
+        return self.read_table("positions")
 
-        return self.read_table("time_series")
-    # -------------
+    def update_transactions(self, rows):
+        sql = self.queries['update_transactions']
+        self.execute(sql, rows, multi=True)
+        return self.read_table("transactions")
+
+    def update_ts(self, rows):
+        sql = self.queries['update_ts']
+        self.execute(sql, rows, multi=True)
+
     def get_price_series(self, symbol, kind, contract_position, include_months=()): # get unadjusted time series 
         contracts = self.get_contract_sequence(symbol, kind, include_months)
         sql = self.queries['get_price_series']
@@ -112,7 +126,7 @@ class Database:
                 self.execute(sql[1], (offset_local_symbol, start, expiry))
                 start = expiry
                              
-        df = self.read_table("temp_df", mute=True)
+        df = self.read_table("temp_df")
         self.execute("DELETE FROM temp_df")
         return df
 
@@ -142,4 +156,4 @@ class Database:
             self.execute(sql, (underlying_id, filter_months))
         else:
             self.execute(sql, (underlying_id,))
-        return self.cur.fetchall()[contract_position][0]
+        return self.cur.fetchall()[contract_position][0]   

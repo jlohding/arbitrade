@@ -1,0 +1,12 @@
+__pycache__/
+venv/
+*.py[cod]
+*.egg-info/
+*.egg
+.idea/
+obs/
+strategies.yml
+signals.py
+config.ini
+cron.txt
+

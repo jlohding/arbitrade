@@ -1,4 +1,4 @@
-import orders
+from arbitrade.controllers.models import orders
 
 class ExecutionController:
     def __init__(self, app, contract_forecast):

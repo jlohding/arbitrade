@@ -1,0 +1,21 @@
+help:
+  name: strategy-name
+  active: bool
+  portfolio_weight: '0 <= weight <= 1'
+  assets: [{ticker: VX, kind: FUT, contract_position: 0}, # future
+           {ticker: SPY, kind: STK}, # stock
+           [{ticker: VX, kind: FUT, contract_position: 0, ratio: 1}, {ticker: VX, kind: FUT, contract_position: 1, ratio: -1}], # future/future spread
+           [{ticker: SPY, kind: STK, ratio: 10}, {ticker: ES, kind: FUT, contract_position: 0, ratio: -1}]] # future/stock spread
+
+strategies:
+  1:
+    name: 'trend'
+    active: true
+    portfolio_weight: 0.75
+    assets: [{ticker: ES, kind: FUT, contract_position: 0},
+              {ticker: NQ, kind: FUT, contract_position: 0}]
+  2:
+    name: 'carry'
+    active: true
+    portfolio_weight: 0.25
+    assets: [[{ticker: VX, kind: FUT, contract_position: 0, ratio: 1}, {ticker: VX, kind: FUT, contract_position: 1, ratio: -1}]]

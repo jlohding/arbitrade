@@ -1,5 +1,5 @@
 import datetime as dt
-from configs import AssetConstants
+from arbitrade.conf.configs import AssetConstants
 
 class HistoricalDataUpdate:
     def __init__(self, app, db, strategy_builder):
@@ -11,7 +11,6 @@ class HistoricalDataUpdate:
         ib_contracts = self.strategy_builder.get_base_ib_contracts()
         all_bars = []
         for base, contract in ib_contracts.items():
-            if contract.symbol == "VIX": continue # temp: i dont have mkt data for cfe right now
             bars = [[base.local_symbol] + bar for bar in self.app.request_historical_data(contract, tm, duration, bar_size)]
             all_bars.extend(bars)
         return all_bars

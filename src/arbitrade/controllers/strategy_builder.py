@@ -1,5 +1,5 @@
-from configs import StrategyConstants
-import strategy
+from arbitrade.conf.configs import StrategyConstants
+from arbitrade.controllers.models import strategy
 
 class StrategyBuilder:
     def __init__(self, asset_builder, contract_builder, asset_filter):

@@ -3,8 +3,8 @@ import datetime as dt
 from ibapi.client import EClient
 from ibapi.wrapper import EWrapper
 from ibapi.execution import ExecutionFilter
-from configs import get_config
-from account import Account
+from arbitrade.conf.configs import get_config
+from arbitrade.client.account import Account
 
 class Client(EWrapper, EClient):
     def __init__(self):
@@ -35,13 +35,12 @@ class Client(EWrapper, EClient):
         self.log("Websocket connection closed.")
 
     # historical data
-    def request_historical_data(self, contract, duration, bar_size):
+    def request_historical_data(self, contract, tm, duration, bar_size):
         self.req_histdata_flag = threading.Event()
         self.bars = []
-        utcnow = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d %H:%M:%S")
         self.reqHistoricalData(reqId=self.nextValidOrderId,
                                contract=contract,
-                               endDateTime=utcnow,
+                               endDateTime=tm,
                                durationStr=duration,
                                barSizeSetting=bar_size,
                                whatToShow="TRADES",

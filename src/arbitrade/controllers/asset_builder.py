@@ -1,6 +1,5 @@
-import re
-from configs import AssetConstants
-import assets
+from arbitrade.conf.configs import AssetConstants
+from arbitrade.controllers.models import assets
 
 class AssetBuilder:
     def __init__(self, db):

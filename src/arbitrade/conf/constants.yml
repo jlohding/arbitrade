@@ -174,44 +174,46 @@ assets:
 
 regex:
   VIX:
-    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
-    local_symbol: [[\d\B,'']]
+    symbol: [["VIX", "VX"]]
+    local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    ib_local_symbol: [[\d\B,'']]
   VX:
-    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
-    local_symbol: [[\d\B,'']]
+    ib_symbol: [["VX", "VIX"]]
+    local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    ib_local_symbol: [[\d\B,'']]
   ES:
-    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
-    local_symbol: [[\d\B,'']]
+    local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    ib_local_symbol: [[\d\B,'']]
   NQ:
-    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
-    local_symbol: [[\d\B,'']]
+    local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    ib_local_symbol: [[\d\B,'']]
   GE:
-    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
-    local_symbol: [[\d\B,'']]
+    local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    ib_local_symbol: [[\d\B,'']]
   SI:
-    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
-    local_symbol: [[\d\B,'']]
+    local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    ib_local_symbol: [[\d\B,'']]
   GC:
-    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
-    local_symbol: [[\d\B,'']]
+    local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    ib_local_symbol: [[\d\B,'']]
   PA:
-    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
-    local_symbol: [[\d\B,'']]
+    local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    ib_local_symbol: [[\d\B,'']]
   HG:
-    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
-    local_symbol: [[\d\B,'']]
+    local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    ib_local_symbol: [[\d\B,'']]
   CL:
-    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
-    local_symbol: [[\d\B,'']]
+    local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    ib_local_symbol: [[\d\B,'']]
   NG:
-    ib_local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
-    local_symbol: [[\d\B,'']]
+    local_symbol: [['(\w)(\d)', '\1-\2'], ["-", "2"]]
+    ib_local_symbol: [[\d\B,'']]
   ZC:
-    ib_local_symbol: [['\s\s\s\w\w\w\s', 'MONTHCODE']]
-    local_symbol: [['(?<=ZC)\w', '   MONTHCODE ']]
+    local_symbol: [['\s\s\s\w\w\w\s', 'MONTHCODE']]
+    ib_local_symbol: [['(?<=ZC)\w', '   MONTHCODE ']]
   ZW:
-    ib_local_symbol: [['\s\s\s\w\w\w\s', 'MONTHCODE']]
-    local_symbol: [['(?<=ZW)\w', '   MONTHCODE ']]
+    local_symbol: [['\s\s\s\w\w\w\s', 'MONTHCODE']]
+    ib_local_symbol: [['(?<=ZW)\w', '   MONTHCODE ']]
   ZS:
-    ib_local_symbol: [['\s\s\s\w\w\w\s', 'MONTHCODE']]
-    local_symbol: [['(?<=ZS)\w', '   MONTHCODE ']]
+    local_symbol: [['\s\s\s\w\w\w\s', 'MONTHCODE']]
+    ib_local_symbol: [['(?<=ZS)\w', '   MONTHCODE ']]

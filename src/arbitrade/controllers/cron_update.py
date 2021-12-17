@@ -1,6 +1,6 @@
 import datetime as dt
 import zoneinfo
-import configs
+import arbitrade.conf.configs as configs
 
 class CronUpdate:
     def __init__(self, app, strategy_builder):

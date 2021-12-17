@@ -1,4 +1,4 @@
-import signals
+import arbitrade.controllers.models.signals as signals
 
 class Strategy:
     def __init__(self, name, portfolio_weight, assets):
