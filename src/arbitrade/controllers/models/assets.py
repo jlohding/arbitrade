@@ -12,6 +12,9 @@ class Asset:
     def get_kind(self):
         return self.kind
 
+    def get_symbol(self):
+        return self.symbol
+
     def get_ib_symbol(self):
         return self.ib_symbol
 
