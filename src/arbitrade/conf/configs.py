@@ -83,7 +83,7 @@ class StrategyConstants:
                             self.constants["strategies"][strat_idx]["assets"].remove(item)
                             break
                 else:
-                    if (leg["ticker"], leg["kind"]) not in asset_filter:
+                    if (item["ticker"], item["kind"]) not in asset_filter:
                         self.constants["strategies"][strat_idx]["assets"].remove(item)
                             
     def get_strategies(self):
